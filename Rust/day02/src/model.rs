@@ -1,8 +1,12 @@
+use std::cmp::{max};
+
 pub struct CubeDraw {
     pub red: u32,
     pub green: u32,
     pub blue: u32,
 }
+
+pub type Bag = CubeDraw;
 
 impl CubeDraw {
     pub fn new() -> CubeDraw {
@@ -73,6 +77,18 @@ impl Game {
         draws
     }
     
+pub fn calc_min_bag(&self) -> Bag {
+    let mut res = Bag::new();
+
+    for d in self.draws.iter() {
+        res.red = max(res.red, d.red);
+        res.green = max(res.green, d.green);
+        res.blue = max(res.blue, d.blue);
+    }
+
+    res
+}
+
     pub fn could_be_bag(&self, red_count: u32, green_count: u32, blue_count: u32) -> bool {
         for d in self.draws.iter() {
             if !d.could_be_bag(red_count, green_count, blue_count) {
