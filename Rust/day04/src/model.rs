@@ -1,5 +1,3 @@
-use crate::main;
-
 pub struct Card {
     pub id: u32,
     pub winners: Vec<u32>,

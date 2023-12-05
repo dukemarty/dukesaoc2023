@@ -31,7 +31,7 @@ fn part1(cards: &Vec<model::Card>) {
         }
     }
 
-    println!("Sum: {}", sum);
+    println!("Sum: {}\n", sum);
 }
 
 fn part2(cards: &Vec<model::Card>) {
@@ -48,7 +48,7 @@ fn part2(cards: &Vec<model::Card>) {
     }
 
     println!(
-        "Final count: {}",
+        "Final count: {}\n",
         count.iter().fold(0, |acc, num| acc + num)
     );
 }
