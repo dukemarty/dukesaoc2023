@@ -22,8 +22,8 @@ pub mod aoc {
         println!("");
     }
 
-    pub fn print_part_header(id: i32, title: &str){
-        println!("Part {}: {}", id, title);
+    pub fn print_part_header(id: i32, title: &str) {
+        println!("\nPart {}: {}", id, title);
         println!("{}", "-".repeat(8 + title.len()));
     }
 }
@@ -38,4 +38,49 @@ pub mod io_utils {
         res
     }
 
+    pub fn read_emptyline_separated_blocks(filename: &str) -> Vec<Vec<String>> {
+        // let content = fs::read_to_string(filename).expect("Should have been able to read the file");
+        // let res: Vec<String> = content.split("\n\n").map(ToOwned::to_owned).collect();
+        // res
+
+        let lines = read_lines(filename);
+        let mut res = Vec::new();
+        let mut b = Vec::new();
+        for l in lines {
+            if l.is_empty() {
+                if b.len() > 0 {
+                    res.push(b);
+                    b = Vec::new();
+                }
+            } else {
+                b.push(l);
+            }
+        }
+
+        if b.len() > 0 {
+            res.push(b);
+        }
+
+        return res;
+    }
+}
+
+pub mod data_utils {
+
+    pub fn parse_i32_list_ws(list: &str) -> Vec<i32> {
+        let res = list
+            .split_whitespace()
+            .map(|t| t.parse::<i32>().unwrap())
+            .collect::<Vec<i32>>();
+
+        res
+    }
+
+    pub fn parse_i32_list_ws_with_title(list: &String) -> (&str, Vec<i32>) {
+        let parts = list.split(":").collect::<Vec<&str>>();
+        let title = parts[0].trim();
+        let numbers = parse_i32_list_ws(parts[1].trim());
+
+        (title, numbers)
+    }
 }
