@@ -29,24 +29,24 @@ impl Hand {
     pub fn cmp_part1(&self, other: &Self) -> Ordering {
         if self.hand_type == other.hand_type {
             // println!("Same hand type: {:?}", self.hand_type);
-            let lCards = self.cards.chars().collect::<Vec<char>>();
-            let rCards = other.cards.chars().collect::<Vec<char>>();
+            let l_cards = self.cards.chars().collect::<Vec<char>>();
+            let r_cards = other.cards.chars().collect::<Vec<char>>();
             for i in 0..self.cards.len() {
-                if lCards[i] == rCards[i] {
+                if l_cards[i] == r_cards[i] {
                     continue;
                 }
-                let lPos = Hand::VALID_CARDS
+                let l_pos = Hand::VALID_CARDS
                     .iter()
-                    .position(|&x| x == lCards[i])
+                    .position(|&x| x == l_cards[i])
                     .unwrap();
-                let rPos = Hand::VALID_CARDS
+                let r_pos = Hand::VALID_CARDS
                     .iter()
-                    .position(|&x| x == rCards[i])
+                    .position(|&x| x == r_cards[i])
                     .unwrap();
                 // println!("Found positions (lPos/rPos): {} / {}", lPos, rPos);
-                if lPos < rPos {
+                if l_pos < r_pos {
                     return Ordering::Less;
-                } else if lPos > rPos {
+                } else if l_pos > r_pos {
                     return Ordering::Greater;
                 } else {
                     println!("EERRRROOOORRR");
@@ -108,12 +108,4 @@ impl Hand {
             _ => HandType::None,
         }
     }
-
-    // fn determine_type(cards: &str) -> HandType {
-    //     let mut chars: Vec<char> = cards.chars().collect();
-    //     chars.sort_by(|a, b| b.cmp(a));
-
-    //     println!("Sorted hand: {:?}", chars);
-    //     HandType::FiveOfKind
-    // }
 }
