@@ -28,6 +28,22 @@ pub mod aoc {
     }
 }
 
+pub mod data {
+
+    #[derive(Debug, Clone)]
+    pub struct MapPos {
+        pub r: usize,
+        pub c: usize,
+    }
+
+    impl MapPos {
+
+        pub fn sym(&self, charmap: &Vec<Vec<char>>) -> char {
+            charmap[self.r][self.c]
+        }
+    }
+}
+
 pub mod io_utils {
 
     use std::{fs, str};
@@ -63,9 +79,18 @@ pub mod io_utils {
 
         return res;
     }
+
+    pub fn read_2d_char_map(filename: &str) -> Vec<Vec<char>> {
+        let lines = read_lines(filename);
+        lines
+            .iter()
+            .map(|l| l.chars().collect::<Vec<char>>())
+            .collect::<Vec<Vec<char>>>()
+    }
 }
 
 pub mod data_utils {
+    use crate::data::MapPos;
 
     pub fn parse_i32_list_ws(list: &str) -> Vec<i32> {
         let res = list
@@ -82,5 +107,17 @@ pub mod data_utils {
         let numbers = parse_i32_list_ws(parts[1].trim());
 
         (title, numbers)
+    }
+
+    pub fn find_sym_in_charmap(sym: char, charmap: &Vec<Vec<char>>) -> Option<super::data::MapPos> {
+        for (r, line) in charmap.iter().enumerate() {
+            for (c, s) in line.iter().enumerate() {
+                if *s == sym {
+                    return Some(MapPos { r, c });
+                }
+            }
+        }
+
+        None
     }
 }
