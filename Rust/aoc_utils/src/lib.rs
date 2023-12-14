@@ -37,7 +37,6 @@ pub mod data {
     }
 
     impl MapPos {
-
         pub fn sym(&self, charmap: &Vec<Vec<char>>) -> char {
             charmap[self.r][self.c]
         }
@@ -119,5 +118,54 @@ pub mod data_utils {
         }
 
         None
+    }
+
+    pub fn lines_to_char_map(lines: &Vec<String>) -> Vec<Vec<char>> {
+        lines
+            .iter()
+            .map(|l| l.chars().collect::<Vec<char>>())
+            .collect::<Vec<Vec<char>>>()
+    }
+
+    pub fn are_columns_equal(charmap: &Vec<Vec<char>>, col1: usize, col2: usize) -> bool {
+        for i in 0..charmap.len() {
+            if charmap[i][col1] != charmap[i][col2] {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    pub fn are_rows_equal(charmap: &Vec<Vec<char>>, row1: usize, row2: usize) -> bool {
+        for i in 0..charmap[0].len() {
+            if charmap[row1][i] != charmap[row2][i] {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    pub fn count_column_differences(charmap: &Vec<Vec<char>>, col1: usize, col2: usize) -> i32 {
+        let mut res = 0;
+        for i in 0..charmap.len() {
+            if charmap[i][col1] != charmap[i][col2] {
+                res += 1;
+            }
+        }
+
+        res
+    }
+
+    pub fn count_row_differences(charmap: &Vec<Vec<char>>, row1: usize, row2: usize) -> i32 {
+        let mut res = 0;
+        for i in 0..charmap[0].len() {
+            if charmap[row1][i] != charmap[row2][i] {
+                res += 1;
+            }
+        }
+
+        res
     }
 }
