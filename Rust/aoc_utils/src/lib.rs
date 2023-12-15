@@ -47,6 +47,10 @@ pub mod io_utils {
 
     use std::{fs, str};
 
+    pub fn read_single_line(filename: &str) -> String {
+        fs::read_to_string(filename).expect("Should have been able to read the file")
+    }
+
     pub fn read_lines(filename: &str) -> Vec<String> {
         let content = fs::read_to_string(filename).expect("Should have been able to read the file");
         let res: Vec<String> = content.lines().map(ToOwned::to_owned).collect();
