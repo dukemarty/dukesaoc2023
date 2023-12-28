@@ -1,5 +1,3 @@
-use std::process;
-
 use aoc_utils::{aoc, data, data_utils, io_utils};
 
 mod model;
@@ -7,16 +5,15 @@ mod model;
 fn main() {
     aoc::print_day_header(10, "Pipe Maze");
 
-    // let pipe_map = io_utils::read_2d_char_map("testdata1.txt");
-    // let pipe_map = io_utils::read_2d_char_map("testdata2.txt");
-    let pipe_map = io_utils::read_2d_char_map("puzzle.txt");
+    // let mut pipe_map = io_utils::read_2d_char_map("testdata1.txt");
+    // let mut pipe_map = io_utils::read_2d_char_map("testdata2.txt");
+    let mut pipe_map = io_utils::read_2d_char_map("puzzle.txt");
     let start_pos = data_utils::find_sym_in_charmap('S', &pipe_map).unwrap();
     println!("Start pos: {:?}", start_pos);
 
-    // let pipe_map = io_utils::read_2d_char_map("testdata2.txt");
-    // let pipe_map = io_utils::read_2d_char_map("puzzle.txt");
-
     part1(&pipe_map, &start_pos);
+
+    part2(&mut pipe_map, &start_pos);
 }
 
 fn part1(pipes: &Vec<Vec<char>>, start: &data::MapPos) {
@@ -31,7 +28,7 @@ fn part1(pipes: &Vec<Vec<char>>, start: &data::MapPos) {
     let mut from_dir = start_dirs[0].clone();
     while next_step.sym(pipes) != 'S' {
         // println!("Loop: ({:?}) from {:?}", next_step, from_dir);
-        (next_step, from_dir) = step(pipes, next_step, from_dir);
+        (next_step, from_dir) = model::step(pipes, next_step, from_dir);
         pipe_parts.push(next_step.clone());
     }
 
@@ -41,87 +38,38 @@ fn part1(pipes: &Vec<Vec<char>>, start: &data::MapPos) {
     println!("Distance: {}", dist);
 }
 
-fn step(
-    pipes: &Vec<Vec<char>>,
-    pos: data::MapPos,
-    origin: model::Dir,
-) -> (data::MapPos, model::Dir) {
-    if origin == model::Dir::None{
-        process::exit(1);
+fn part2(pipes: &mut Vec<Vec<char>>, start: &data::MapPos) {
+    aoc::print_part_header(2, "Enclosed area size");
+
+    let mut area_map = model::AreaMap::create(pipes, &start);
+    // println!("-----------------------------------------------------------------------");
+    // println!("{}", area_map);
+    // println!("-----------------------------------------------------------------------");
+    let start_connections = model::find_connections(start, pipes);
+    if start_connections.contains(&model::Dir::Down) {
+        if start_connections.contains(&model::Dir::Up) {
+            pipes[start.r][start.c] = '|';
+        } else if start_connections.contains(&model::Dir::Left) {
+            pipes[start.r][start.c] = '7';
+        } else {
+            pipes[start.r][start.c] = 'F';
+        }
+    } else if start_connections.contains(&model::Dir::Up) {
+        if start_connections.contains(&model::Dir::Left) {
+            pipes[start.r][start.c] = 'J';
+        } else {
+            pipes[start.r][start.c] = 'L';
+        }
+    } else {
+        pipes[start.r][start.c] = '-';
     }
-    // println!("Moving from pos {:?} from {:?}", pos, origin);
-    match (origin, pos.sym(pipes)) {
-        (model::Dir::Up, '|') => (
-            model::Dir::Up.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Up,
-        ),
-        (model::Dir::Down, '|') => (
-            model::Dir::Down.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Down,
-        ),
-        (model::Dir::Left, '-') => (
-            model::Dir::Left.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Left,
-        ),
-        (model::Dir::Right, '-') => (
-            model::Dir::Right.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Right,
-        ),
-        (model::Dir::Down, 'L') => (
-            model::Dir::Right.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Right,
-        ),
-        (model::Dir::Left, 'L') => (
-            model::Dir::Up.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Up,
-        ),
-        (model::Dir::Down, 'J') => (
-            model::Dir::Left.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Left,
-        ),
-        (model::Dir::Right, 'J') => (
-            model::Dir::Up.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Up,
-        ),
-        (model::Dir::Up, '7') => (
-            model::Dir::Left.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Left,
-        ),
-        (model::Dir::Right, '7') => (
-            model::Dir::Down.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Down,
-        ),
-        (model::Dir::Up, 'F') => (
-            model::Dir::Right.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Right,
-        ),
-        (model::Dir::Left, 'F') => (
-            model::Dir::Down.move_pos(&pos, pipes).unwrap(),
-            model::Dir::Down,
-        ),
-        _ => (pos, model::Dir::None),
-    }
+    // area_map.print_relevant_pipes(pipes);
 
-    // L is a 90-degree bend connecting north and east.
-    // J is a 90-degree bend connecting north and west.
-    // 7 is a 90-degree bend connecting south and west.
-    // F is a 90-degree bend connecting south and east.
-    // . is ground; there is no pipe in this tile.
-    // S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has.
+    area_map.mark_inner_area(pipes);
+    // println!("-----------------------------------------------------------------------");
+    // println!("{}", area_map);
 
-    //     model::Dir::Up,
-    //     model::Dir::Right,
-    //     model::Dir::Down,
-    //     model::Dir::Left,
-    // ];
+    let area = area_map.inner_count;
 
-    // for o in order.iter() {
-    //     if *o == origin {
-    //         continue;
-    //     }
-
-    //     // let next = o.move_pos(origin);
-    // }
-
-    // (pos, model::Dir::None)
+    println!("Area: {}", area);
 }
