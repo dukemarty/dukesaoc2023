@@ -77,3 +77,11 @@ pub fn count_row_differences(charmap: &Vec<Vec<char>>, row1: usize, row2: usize)
 
     res
 }
+
+pub fn charmap_to_string(charmap: &Vec<Vec<char>>) -> String {
+    charmap.iter()
+    .map(|r| r.iter().collect::<String>())
+    .collect::<Vec<String>>()
+    .join("\n")
+}
+
