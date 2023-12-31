@@ -66,8 +66,8 @@ pub fn part2(
 ) {
     aoc::print_part_header(2, "Steps to end from all");
 
-    let mut routes = model::MultiRoute::create(instr, nodes, starts, ends);
-    println!("Multi routes:\n{:?}", routes);
+    let routes = model::MultiRoute::create(instr, nodes, starts, ends);
+    // println!("Multi routes:\n{:?}", routes);
 
     let mut congruences = Vec::new();
     for s in starts.iter() {
@@ -99,7 +99,7 @@ pub fn part2(
             .first()
             .unwrap()
             .count;
-        println!("Steps for {}: {:?}", s, steps);
+        // println!("Steps for {}: {:?}", s, steps);
         congruences.push(model::Congruence { a: n1, m: n2 - n1 });
     }
     println!("To solve:");
@@ -110,10 +110,6 @@ pub fn part2(
     println!("For puzzle input apparently, simplified solution possible: least common multiple should be enough!");
 
     let res = lcm(congruences.iter().map(|c| (*c).m).collect()) * (instr.len() as u64);
-    // let mut routes = starts.iter().map(|nn| model::Route {pos: nn.clone(), rounds:0}).collect::<Vec<Route>>();
-
-    // let rounds = routes.run_till_common_end() as i64;
-    // let steps = rounds * (instr.len() as i64);// (instr.len() as i32);
 
     println!("#Total of steps: {}", res);
 }

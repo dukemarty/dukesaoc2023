@@ -1,9 +1,6 @@
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::{
-    cmp,
-    collections::{HashMap, HashSet},
-};
+use std::collections::{HashMap, HashSet};
 
 #[derive(Debug)]
 pub struct Node {
@@ -76,50 +73,11 @@ impl MultiRoute {
         }
     }
 
-    pub fn run_till_common_end(&mut self) -> i32 {
-        while !self.finished() {
-            // at start, all are 0 => at least 1 as max
-            let current_max = cmp::max(1, self.routes.iter().map(|r| (*r).rounds).max().unwrap());
-            for i in 0..self.routes.len() {
-                // let r = &self.routes[i];
-                while self.routes[i].rounds < current_max {
-                    let (next_stop, add_rounds) = &self.rounds_till_end[&self.routes[i].pos];
-                    let new_route = Route {
-                        pos: next_stop.clone(),
-                        rounds: self.routes[i].rounds + add_rounds,
-                    };
-                    // r.pos = next_stop.clone();
-                    // r.rounds += add_rounds;
-                    self.routes[i] = new_route;
-                }
-            }
-            println!("Next round: {:?}", self.routes);
-        }
-
-        self.routes[0].rounds
-    }
-
-    // fn find_min_route(&self) -> String {
-    //     let min_route = self.routes.iter().min_by_key(|r| *r.rounds).unwrap();
-
-    //     min_route.
-    // }
-
-    fn finished(&self) -> bool {
-        let rounds = self.routes[0].rounds;
-        self.routes
-            .iter()
-            .map(|r| &(*r).pos)
-            .all(|p| p.chars().last().unwrap() == 'Z')
-            && self.routes.iter().map(|r| (*r).rounds).all(|r| r == rounds)
-    }
-
     fn rounds_till_some_end(
         name: &String,
         instr: &Vec<char>,
         nodes: &HashMap<String, &Node>,
     ) -> (String, i32) {
-        let mut steps = 0;
         let mut rounds = 0;
         let mut curr = name;
         let mut is_first = true;
@@ -133,7 +91,6 @@ impl MultiRoute {
                         curr
                     }
                 };
-                steps += 1;
             }
             rounds += 1;
             is_first = false;
@@ -152,5 +109,5 @@ pub struct Step {
 #[derive(Debug)]
 pub struct Congruence {
     pub a: i32,
-    pub m: i32
+    pub m: i32,
 }
